@@ -2,16 +2,16 @@
 const db = require('../db')
 const AppError = require('../utils/AppError')
 
-const verifyJwt = require('../utils/verifyJwt')
-
-
 
 //Returns all posts from the db
 //Make a GET req: "http://localhost:3000/posts"
 exports.getAllPosts = async(req, res) => {
 
+    //V1 - without db
+    //const rows = [{slug: 'A', content: 'B', title: 'C', created_by: 'D'}]
+    //V2
     const { rows } = await db.query('SELECT * FROM posts ORDER BY slug');
-
+    
     return rows
 }
 
@@ -22,27 +22,25 @@ exports.getAllPosts = async(req, res) => {
 //{
 //  "title": "...",
 //  "content": "...",
-//  "created_by": "...",    
 //}
 exports.savePost = async(req, res) => {
 
     //get params
-    const { title, content, created_by } = req.body
-
-    //check if user is authenticated
-    if (!created_by) throw new AppError('Campo não inserido ou inválido: "created_by"', 400)
-    const { rowCount } = await db.query('SELECT * FROM users WHERE username = $1', [created_by])
-    if (!rowCount) throw new AppError(`Usuário não autenticado: ${created_by}`, 400)
+    //V1 - without auth
+    //const { title, content, created_by } = req.body
+    //V2
+    const { title, content } = req.body
+    const created_by = req.username
 
     //setup the data
     const lowerCaseTitle = title.toLowerCase()
-    const slug = lowerCaseTitle.replaceAll(' ', '-')
+    const slug = lowerCaseTitle.replace(/ /g, '-')    //replaceAll spaces with dashes
 
     //make the SQL operation
     await db.query('INSERT INTO posts (slug, title, content, created_by) VALUES ($1, $2, $3, $4)', [slug, title, content, created_by]);
     
     const post = {slug, title, content, created_by}
-    
+
     return post
 }
 
@@ -55,7 +53,7 @@ exports.getPost = async(req, res) => {
 
     const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
     
-    if (!rows.length) throw new AppError('Post não encontrado.', 404)
+    if (!rows.length) throw new AppError('Post não encontrado.', 404)   //Not Found
 
     return rows[0]
 }
@@ -71,13 +69,23 @@ exports.getPost = async(req, res) => {
 exports.updatePost = async(req, res) => {
     
     const slug = req.params.slug
-    const { title, content, created_by } = req.body
+    const { title, content } = req.body
+    const authenticatedUser = req.username
 
-    const { rows } = await db.query('UPDATE posts SET title = $2, content = $3 WHERE slug = $1', [slug, title, content])
+    //Users can edit just their own posts
+    const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
+    if (!rows.length) throw new AppError('Post não encontrado.', 404)       //Not Found
+    if (rows[0].created_by !== authenticatedUser) throw new AppError('Esse post não é seu para editar!.', 403)  //Forbidden
 
-    if (!rows.length) throw new AppError('Post não encontrado.', 404)
+    //setup the data
+    const lowerCaseTitle = title.toLowerCase()
+    const newSlug = lowerCaseTitle.replace(/ /g, '-')    //replaceAll spaces with dashes
+
+    //make the sql query
+    await db.query('UPDATE posts SET slug = $1, title = $2, content = $3 WHERE slug = $4', [newSlug, title, content, slug])
     
-    return rows[0]
+    const post = {newSlug, title, content, authenticatedUser}
+    return post
 }
 
 

@@ -5,7 +5,7 @@ const catchAsync = require('../utils/CatchAsync')
 //Returns all posts from the db
 exports.getAllPosts = async(req, res) => {
 
-    //V1
+    //V1 - without service
     /*const data = [
         {'title': 'Hello, World!', 'content': 'Here I am!', 'slug': '1', 'created_by': 'Alessandro',},
         {'title': 'Hello Again!', 'content': 'Here I am!', 'slug': '2', 'created_by': 'Alessandro',},

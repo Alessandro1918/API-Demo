@@ -12,6 +12,9 @@ app.use(express.json())
 app.use('/posts', postsRoutes)
 app.use('/login', authRoutes)
 
-app.listen(3000, async () => {
-    console.log('Server is running....')
+const baseUrl = 'http://localhost'
+const port = process.env.PORT || 3000;
+
+app.listen(port, async () => {
+    console.log(`Server is running on ${baseUrl}:${port}`)
 });
