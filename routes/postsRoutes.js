@@ -5,7 +5,7 @@ const Router = require('express')
 const postsController = require('../controllers/postsController')
 
 //Routes with the middleware 'verifyJwt' need authentication
-const verifyJwt = require('../utils/verifyJwt')
+const verifyJwt = require('../utils/VerifyJwt')
 
 const routes = Router()
 
