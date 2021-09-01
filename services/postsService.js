@@ -18,7 +18,7 @@ exports.getAllPosts = async(req, res) => {
 
 //Save a post in the db
 //Make a POST req: "http://localhost:3000/posts"
-//and body
+//and body:
 //{
 //  "title": "...",
 //  "content": "...",
@@ -40,7 +40,6 @@ exports.savePost = async(req, res) => {
     await db.query('INSERT INTO posts (slug, title, content, created_by) VALUES ($1, $2, $3, $4)', [slug, title, content, created_by]);
     
     const post = {slug, title, content, created_by}
-
     return post
 }
 
@@ -72,10 +71,10 @@ exports.updatePost = async(req, res) => {
     const { title, content } = req.body
     const authenticatedUser = req.username
 
-    //Users can edit just their own posts
+    //Users can edit only their own posts
     const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
     if (!rows.length) throw new AppError('Post não encontrado.', 404)       //Not Found
-    if (rows[0].created_by !== authenticatedUser) throw new AppError('Esse post não é seu para editar!.', 403)  //Forbidden
+    if (rows[0].created_by !== authenticatedUser) throw new AppError('Esse post não é seu para editar!', 403)  //Forbidden
 
     //setup the data
     const lowerCaseTitle = title.toLowerCase()
@@ -94,15 +93,14 @@ exports.updatePost = async(req, res) => {
 exports.deletePost = async(req, res) => {
 
     const slug = req.params.slug
+    const authenticatedUser = req.username
 
-    //Check if post exists
-    //const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
-    //if (!rows.length) throw new AppError('Post não encontrado.', 404)
-    //Delete
-    //await db.query('DELETE FROM posts WHERE slug = $1', [slug])
-    //return rows[0]
+    //Users can delete only their own posts
+    const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
+    if (!rows.length) throw new AppError('Post não encontrado.', 404)       //Not Found
+    if (rows[0].created_by !== authenticatedUser) throw new AppError('Esse post não é seu para deletar!', 403)  //Forbidden
 
-    const { rowCount } = await db.query('DELETE FROM posts WHERE slug = $1', [slug])
-    if (!rowCount) throw new AppError('Post não encontrado.', 404)
+    await db.query('DELETE FROM posts WHERE slug = $1', [slug])
 
+    //return rows[0]    //service doesn't return the deleted post
 }
