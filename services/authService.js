@@ -4,8 +4,7 @@ const db = require('../db')
 const AppError = require('../utils/AppError');
 
 
-//Search user in the db and authenticate them, returning their token.
-//Then, use this token as a header param with the 'x-access-token' key to enter the auth API routes.
+//Search the user in the db and authenticates them, returning their token.
 //Make a POST req with the param: "http://localhost:3000/login"
 //and body:
 //{
@@ -28,6 +27,7 @@ exports.loginUser = async(req, res) => {
         { expiresIn: 55*60 }    //n * 60s/min = n min
     )
     
+    //use this token as a header param with the 'x-access-token' key to enter the authenticated API routes.
     const user = {auth: true, username: username, token: token}
     console.log('Usuário logado:\n' , user)   
     return user

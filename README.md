@@ -4,25 +4,30 @@
 Um protótipo de API para salvar, ler, editar e deletar posts de diferentes autores em um blog
 
 ## 🛠️ Tecnologias
+[JWT](https://jwt.io)
+[Node.js](https://nodejs.org/en/)
 [PostgreSQL](https://www.postgresql.org)
 
 ## 🗂️ Utilização
 
-### 📥 Baixando o código:
+### 🐑🐑 Clonando o repositório:
 
 ```bash
-  # Clone the repository
   $ git clone https://github.com/Alessandro1918/blogpostAPI.git
+```
+
+### 📥 Baixando as dependências:
+
+```bash
+  $ cd blogpostAPI
+
+  # Download dependencies to node_modules
+  $ npm install
 ```
 
 ### ▶️ Rodando o App:
 
-```sh
-  $ cd blogpostAPI
-  
-  # Install dependencies.
-  $ npm install
-  
+```bash
   # Start the project:
   $ npm start
 

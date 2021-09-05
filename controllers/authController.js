@@ -1,7 +1,7 @@
 const authService = require('../services/authService')
 const catchAsync = require('../utils/CatchAsync')
 
-//Search user in the db and authenticate them, returning their token
+//Search the user in the db and authenticates them, returning their token
 exports.loginUser = catchAsync(async(req, res, next) => {
 
     const user = await authService.loginUser(req)
