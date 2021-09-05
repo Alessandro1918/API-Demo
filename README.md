@@ -4,9 +4,9 @@
 Um protótipo de API para salvar, ler, editar e deletar posts de diferentes autores em um blog
 
 ## 🛠️ Tecnologias
-[JWT](https://jwt.io)
-[Node.js](https://nodejs.org/en/)
-[PostgreSQL](https://www.postgresql.org)
+- [JWT](https://jwt.io)
+- [Node.js](https://nodejs.org/en/)
+- [PostgreSQL](https://www.postgresql.org)
 
 ## 🗂️ Utilização
 
