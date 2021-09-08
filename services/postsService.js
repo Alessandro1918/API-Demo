@@ -88,7 +88,7 @@ exports.updatePost = async(req, res) => {
 }
 
 
-//Remove a post from the db, filtered by it's slug
+//Removes a post from the db, filtered by it's slug
 //Make a DELETE req with the param: "http://localhost:3000/posts/enter-your-slug-here"
 exports.deletePost = async(req, res) => {
 
