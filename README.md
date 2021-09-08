@@ -4,7 +4,7 @@
 Um protótipo de API para salvar, ler, editar e deletar posts de diferentes autores em um blog
 
 ## 🛠️ Tecnologias
-- [JWT](https://jwt.io)
+- [JWT](https://jwt.io) (Autenticação de usuários por meio de tokens assinados pelo servidor da API)
 - [Node.js](https://nodejs.org/en/)
 - [PostgreSQL](https://www.postgresql.org)
 
@@ -30,8 +30,19 @@ Um protótipo de API para salvar, ler, editar e deletar posts de diferentes auto
 ```bash
   # Start the project:
   $ npm start
-
-  # Check out the pages at:
-  $ http://localhost:3000/posts/                  # Get all posts
-  $ http://localhost:3000/posts/bolo-de-laranja   # Get one post filtered by it's slug
+  
+  # Login
+  # Check usage and comments at file services/authService.js
+  $ http://localhost:3000/login       # Search the user in the db and returns a jtw token used to access authenticated routes. 
+  
+  # Check out the results at:
+  # (Non-authenticated routes)
+  $ GET http://localhost:3000/posts/                  # Returns all posts from the db
+  $ GET http://localhost:3000/posts/bolo-de-laranja   # Returns a single post from the db, filtered by it's slug
+  
+  # (Authenticated routes)
+  # Check usage and comments at file services/postsService.js
+  $ POST   http://localhost:3000/posts/                  # Save a post in the db
+  $ PUT    http://localhost:3000/posts/bolo-de-laranja   # Edit a post, filtered by it's slug
+  $ DELETE http://localhost:3000/posts/bolo-de-laranja   # Removes a post from the db, filtered by it's slug
 ```
