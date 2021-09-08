@@ -4,7 +4,7 @@ const db = require('../db')
 const AppError = require('../utils/AppError');
 
 
-//Search the user in the db and authenticates them, returning their token.
+//Search the user in the db and returns a jtw token used to access authenticated routes
 //Make a POST req with the param: "http://localhost:3000/login"
 //and body:
 //{
