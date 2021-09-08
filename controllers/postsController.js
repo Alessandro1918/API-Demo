@@ -59,7 +59,7 @@ exports.updatePost = catchAsync(async(req, res, next) => {
 })
 
 
-//Remove a post from the db, filtered by it's slug
+//Removes a post from the db, filtered by it's slug
 exports.deletePost = catchAsync(async (req, res, next) => {
 
     //const post = await postsService.deletePost(req)

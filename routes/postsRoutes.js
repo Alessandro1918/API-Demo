@@ -16,7 +16,7 @@ routes.route('/')
 routes.route('/:slug')
     .get(postsController.getPost)                  //Returns a single post from the db, filtered by it's slug
     .put(verifyJwt, postsController.updatePost)    //Edit a post, filtered by it's slug
-    .delete(verifyJwt, postsController.deletePost) //Remove a post from the db, filtered by it's slug
+    .delete(verifyJwt, postsController.deletePost) //Removes a post from the db, filtered by it's slug
     
 //export default routes
 module.exports = routes
