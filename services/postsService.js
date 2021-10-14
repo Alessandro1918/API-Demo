@@ -18,6 +18,10 @@ exports.getAllPosts = async(req, res) => {
 
 //Save a post in the db
 //Make a POST req: "http://localhost:3000/posts"
+//with header:
+//{
+//  "x-access-token": "...",
+//}
 //and body:
 //{
 //  "title": "...",
@@ -30,16 +34,16 @@ exports.savePost = async(req, res) => {
     //const { title, content, created_by } = req.body
     //V2
     const { title, content } = req.body
-    const created_by = req.username
+    const authenticatedUser = req.username     //username added in the req by the verifyJwt middleware
 
     //setup the data
     const lowerCaseTitle = title.toLowerCase()
     const slug = lowerCaseTitle.replace(/ /g, '-')    //replaceAll spaces with dashes
 
     //make the SQL operation
-    await db.query('INSERT INTO posts (slug, title, content, created_by) VALUES ($1, $2, $3, $4)', [slug, title, content, created_by]);
+    await db.query('INSERT INTO posts (slug, title, content, created_by) VALUES ($1, $2, $3, $4)', [slug, title, content, authenticatedUser]);
     
-    const post = {slug, title, content, created_by}
+    const post = {slug, title, content, created_by: authenticatedUser}
     return post
 }
 
@@ -60,6 +64,10 @@ exports.getPost = async(req, res) => {
 
 //Edit a post, filtered by it's slug
 //Make a PUT req with the param: "http://localhost:3000/posts/enter-your-slug-here"
+//and header:
+//{
+//  "x-access-token": "...",
+//}
 //and body:
 //{
 //  "title": "...",
@@ -67,9 +75,10 @@ exports.getPost = async(req, res) => {
 //}
 exports.updatePost = async(req, res) => {
     
+    //get params
     const slug = req.params.slug
     const { title, content } = req.body
-    const authenticatedUser = req.username
+    const authenticatedUser = req.username      //username added in the req by the verifyJwt middleware
 
     //Users can edit only their own posts
     const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
@@ -80,26 +89,32 @@ exports.updatePost = async(req, res) => {
     const lowerCaseTitle = title.toLowerCase()
     const newSlug = lowerCaseTitle.replace(/ /g, '-')    //replaceAll spaces with dashes
 
-    //make the sql query
+    //make the SQL operation
     await db.query('UPDATE posts SET slug = $1, title = $2, content = $3 WHERE slug = $4', [newSlug, title, content, slug])
     
-    const post = {newSlug, title, content, authenticatedUser}
+    const post = {newSlug, title, content, created_by: authenticatedUser}
     return post
 }
 
 
 //Removes a post from the db, filtered by it's slug
 //Make a DELETE req with the param: "http://localhost:3000/posts/enter-your-slug-here"
+//with header:
+//{
+//  "x-access-token": "...",
+//}
 exports.deletePost = async(req, res) => {
 
+    //get params
     const slug = req.params.slug
-    const authenticatedUser = req.username
+    const authenticatedUser = req.username      //username added in the req by the verifyJwt middleware
 
     //Users can delete only their own posts
     const { rows } = await db.query('SELECT * FROM posts WHERE slug = $1', [slug])
     if (!rows.length) throw new AppError('Post não encontrado.', 404)       //Not Found
     if (rows[0].created_by !== authenticatedUser) throw new AppError('Esse post não é seu para deletar!', 403)  //Forbidden
 
+    //make the SQL operation
     await db.query('DELETE FROM posts WHERE slug = $1', [slug])
 
     //return rows[0]    //service doesn't return the deleted post
