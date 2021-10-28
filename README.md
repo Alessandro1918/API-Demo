@@ -33,9 +33,10 @@ Um protótipo de API para salvar, ler, editar e deletar posts de diferentes auto
   
   # Login
   # Check usage and comments at file services/authService.js
-  $ http://localhost:3000/login       # Search the user in the db and returns a jtw token used to access authenticated routes. 
+  $ POST http://localhost:3000/login       # Search the user in the db and returns a jtw token used to access authenticated routes. 
   
   # Non-authenticated routes
+  # Check usage and comments at file services/postsService.js
   $ GET http://localhost:3000/posts/                  # Returns all posts from the db
   $ GET http://localhost:3000/posts/bolo-de-laranja   # Returns a single post from the db, filtered by it's slug
   
